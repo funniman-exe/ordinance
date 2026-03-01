@@ -49,7 +49,10 @@ public int CheckOrdServer(Handle hRequest, bool bFailure, bool bRequestSuccessfu
 		CloseHandle(hRequest);
 		PrintToServer("Close Handle");
 		g_ordserveronline = true;
-		SendInput("BEGIN");
+		if (StrEqual(g_mapname, "ordinance"))
+		{
+			SendInput("BEGIN");
+		}
 		return 0;
 	}
 	else
@@ -110,7 +113,6 @@ public void OnMapStart()
 	SteamWorks_SendHTTPRequest(hRequest);
 	g_mapname = "\0";
 	GetCurrentMap(g_mapname, sizeof(g_mapname));
-	int ordinance_enabled = GetConVarInt(g_ordinance_enabled);
 	char path2[PLATFORM_MAX_PATH];
 	char state[256];
 	BuildPath(Path_SM, path2, sizeof(path2), "configs/%s", PAWN_STATE_FILE);
@@ -140,12 +142,6 @@ public void OnMapStart()
 			CreateTimer(20.0, OrdCry);
 			return;
 		}
-		if (ordinance_enabled == 1) 
-		{
-			Format(url, sizeof(url), "http://%s", ORDINANCE_SERVER);
-			Handle hRequest2 = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, url);
-			SteamWorks_SetHTTPCallbacks(hRequest2, CheckOrdServer);
-			SteamWorks_SendHTTPRequest(hRequest2);
-		}
+		
 	}
 }
