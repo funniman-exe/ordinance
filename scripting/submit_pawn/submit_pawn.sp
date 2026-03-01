@@ -5,18 +5,15 @@
 #include <json>
 #pragma newdecls required
 #pragma semicolon 1
-#define PLAYER_PAWN_FILE "player_pawn.txt"
-#define PAWN_STATE_FILE "pawn_state.txt"
-#define ORDINANCE_SERVER "10.0.0.100:5000"
 char g_playername[MAX_NAME_LENGTH];
 char g_playersteamid[256];
-bool g_ordserveronline;
+
 bool g_hit_vul_door;
 
 ConVar g_triggername;
 ConVar g_autokick;
 
-void clearVars()
+void clearPawnVars()
 {
 	g_playername = "\0";
 	SetConVarString(g_triggername, "\0");
@@ -44,37 +41,6 @@ public void SendData(const char[] player, const char[] trigger, int timestamp)
 	SteamWorks_SendHTTPRequest(req);
 }
 
-void makeConfig()
-{
-	char path[PLATFORM_MAX_PATH];
-	char path2[PLATFORM_MAX_PATH];
-	BuildPath(Path_SM, path, sizeof(path), "configs/%s", PLAYER_PAWN_FILE);
-	BuildPath(Path_SM, path2, sizeof(path2), "configs/%s", PAWN_STATE_FILE);
-	if (!FileExists(path))
-	{
-		PrintToServer(path);
-		KeyValues kv = new KeyValues("Player_Pawn");
-		kv.SetString("playername", "SERVICE MANAGER");
-		kv.SetString("date", "DECEMBER 31TH 2099");
-		kv.Rewind();
-		kv.ExportToFile(path);
-		delete kv;
-	}
-	if (!FileExists(path2))
-	{
-		KeyValues kv = new KeyValues("Pawn_state");
-		kv.SetString("state", "alive");
-		kv.Rewind();
-		kv.ExportToFile(path2);
-		delete kv;
-	}
-}
-public int OnHTTPResponse(Handle req, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode statuscode)
-{
-	CloseHandle(req);
-	PrintToServer("Close Handle");
-	return 0;
-}
 public void set_pawn_state(const char[] state, bool senddata)
 {
 	char path[PLATFORM_MAX_PATH];
@@ -128,45 +94,10 @@ public void OnTriggerHurt(const char[] output, int caller, int activator, float 
 	}
 }
 
-public void OnMapStart()
-{
-	clearVars();
-	char mapname[128];
-	char url[256];
-	g_hit_vul_door = false;
-	GetCurrentMap(mapname, sizeof(mapname));
-	if (StrEqual(mapname, "ord_error"))
-	{
-		set_pawn_state("dead", false);
-	}
-	HookEntityOutput("trigger_hurt", "OnHurtPlayer", OnTriggerHurt);
-	Format(url, sizeof(url), "http://%s", ORDINANCE_SERVER);
-	Handle hRequest = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, url);
-	SteamWorks_SetHTTPCallbacks(hRequest, CheckOrdServer);
-	SteamWorks_SendHTTPRequest(hRequest);
-}
 
-public int CheckOrdServer(Handle hRequest, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode statuscode)
-{
-	if (bRequestSuccessful && statuscode == k_EHTTPStatusCode200OK)
-	{
-		CloseHandle(hRequest);
-		PrintToServer("Close Handle");
-		g_ordserveronline = true;
-		return 0;
-	}
-	else
-	{
-		CloseHandle(hRequest);
-		PrintToServer("Close Handle");
-		g_ordserveronline = false;
-		return 0;
-	}
-
-}
 public Action Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
-	clearVars();
+	clearPawnVars();
 	return Plugin_Continue;
 }
 public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)

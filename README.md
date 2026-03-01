@@ -20,7 +20,7 @@
         src="https://img.shields.io/github/repo-size//ordinance"
     />
     <img
-        src="https://img.shields.io/github/workflow/status//ordinance/Compile%20and%20release"
+        src="https://img.shields.io/github/workflow/status//ordinance/Build%20and%20release"
     />
   </p>
 </div>

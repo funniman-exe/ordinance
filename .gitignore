@@ -1,1 +1,12 @@
 .vscode/
+*.smx
+scripting/include/
+/.venv
+/sourcemod-linux
+/sourcemod-win
+/*_archive
+sourcemod-win.zip
+sourcemod-linux.zip
+build_log.txt
+*.tar.gz
+*.zip
