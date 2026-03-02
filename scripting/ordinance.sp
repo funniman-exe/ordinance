@@ -9,7 +9,6 @@
 ConVar g_ordinance_enabled;
 #define PLAYER_PAWN_FILE "player_pawn.txt"
 #define PAWN_STATE_FILE "pawn_state.txt"
-// #define ORDINANCE_SERVER "10.0.0.100:5000"
 ConVar g_ordinance_server;
 bool g_ordserveronline;
 char g_mapname[128];
