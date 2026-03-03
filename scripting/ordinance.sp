@@ -17,7 +17,7 @@ public Plugin myinfo =
 	name = "ordinance",
 	author = "TheRedEnemy",
 	description = "",
-	version = "2.0.0",
+	version = "2.0.1",
 	url = "https://github.com/theredenemy/ordinance"
 };
 
@@ -82,7 +82,8 @@ void makePawnConfig()
 		PrintToServer(path);
 		KeyValues kv = new KeyValues("Player_Pawn");
 		kv.SetString("playername", "SERVICE MANAGER");
-		kv.SetString("date", "DECEMBER 31TH 2099");
+		// Change This From 2099 Due to Y2K38
+		kv.SetString("date", "DECEMBER 31TH 2001");
 		kv.Rewind();
 		kv.ExportToFile(path);
 		delete kv;
