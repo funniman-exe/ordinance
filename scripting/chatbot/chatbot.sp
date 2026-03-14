@@ -33,6 +33,7 @@ public int OnChatResponse(Handle req, bool bFailure, bool bRequestSuccessful, EH
     {
         char cmd[256];
         obj.GetString("cmd", cmd, sizeof(cmd));
+        PrintToServer(cmd);
         ServerCommand("%s", cmd);
     }
     CloseHandle(req);
@@ -45,6 +46,10 @@ public void SendChatToServer(const char[] msg, const char[] playername, const ch
 	char url[256];
     char ord_server[256];
 	GetConVarString(g_ordinance_server, ord_server, sizeof(ord_server));
+    for (int i = 0; i < strlen(msg); i++)
+	{
+		msg[i] = CharToLower(msg[i]);
+	}
 	JSON_Object obj = new JSON_Object();
 	obj.SetString("message", msg);
     obj.SetString("player", playername);
@@ -147,7 +152,7 @@ public Action Command_Bot_Say(int args)
         StrCat(msg, sizeof(msg), arg);
     }
     
-    PrintToChatAll("\x07000099%s\x01 : %s", pawn_name, msg);
+    PrintToChatAll("\x0700FF00%s\x01 : %s", pawn_name, msg);
     PrecacheSound(sound, true);
 		
 	EmitSoundToAll(sound);
