@@ -34,6 +34,7 @@ def download_file(url, filename):
 # dependencies\sm-json\addons\sourcemod\scripting\include\json
 sm_json = os.path.join(maindir, "dependencies", "sm-json", "addons", "sourcemod", "scripting", "include")
 SteamWorks = os.path.join(maindir, "dependencies", "SteamWorks", "Pawn", "includes")
+download_file("https://raw.githubusercontent.com/DoctorMcKay/sourcemod-plugins/refs/heads/master/scripting/include/morecolors.inc", os.path.join(scripting_dir, "include"))
 
 # SourcePawn Script
 
