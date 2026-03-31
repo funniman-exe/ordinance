@@ -17,7 +17,7 @@ public Plugin myinfo =
 	name = "ordinance",
 	author = "TheRedEnemy",
 	description = "",
-	version = "3.1.1",
+	version = "3.1.2",
 	url = "https://github.com/theredenemy/ordinance"
 };
 
@@ -87,7 +87,7 @@ void makePawnConfig()
 		KeyValues kv = new KeyValues("Player_Pawn");
 		kv.SetString("playername", "SERVICE MANAGER");
 		// Change This From 2099 Due to Y2K38
-		kv.SetString("date", "DECEMBER 31TH 2001");
+		kv.SetString("date", "DECEMBER 31TH 2008");
 		kv.Rewind();
 		kv.ExportToFile(path);
 		delete kv;
@@ -110,7 +110,7 @@ public void OnMapStart()
 	GetConVarString(g_ordinance_server, ord_server, sizeof(ord_server));
 	g_hit_vul_door = false;
 	GetCurrentMap(mapname, sizeof(mapname));
-	if (StrEqual(mapname, "ord_error"))
+	if (StrEqual(mapname, "ord_error", false))
 	{
 		set_pawn_state("dead", false);
 	}

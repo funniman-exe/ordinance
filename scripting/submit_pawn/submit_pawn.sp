@@ -187,7 +187,7 @@ public Action pawn_check_cmd(int args)
 		return Plugin_Handled;
 	}
 	GetCurrentMap(mapname, sizeof(mapname));
-	if (StrEqual(mapname, "2fort") || StrEqual(mapname, "cp_dustbowl"))
+	if (StrEqual(mapname, "2fort", false) || StrEqual(mapname, "cp_dustbowl", false))
 	{
 		return Plugin_Handled;
 	}
@@ -208,7 +208,7 @@ public Action pawn_check_cmd(int args)
 	}
 	else
 	{
-		if (!StrEqual(mapname, "submit_pawn"))
+		if (!StrEqual(mapname, "submit_pawn", false))
 		{
 			if (IsMapValid("submit_pawn"))
 			{
@@ -228,7 +228,7 @@ public Action pawn_check_cmd(int args)
 		{
 			GetClientName(i, playername, sizeof(playername));
 			// PrintToServer(playername);
-			if (StrEqual(playername, pawn_name))
+			if (StrEqual(playername, pawn_name, false))
 			{
 				KickClient(i, reason);
 			}
@@ -290,7 +290,7 @@ public Action display_vul_text_cmd(int args)
 	else
 	{
 		delete kv2;
-		date = "DECEMBER 31TH 2099";
+		date = "DECEMBER 31TH 2008";
 	}
 	KeyValues kv3 = new KeyValues("Pawn_state");
 	if (!kv3.ImportFromFile(path2))

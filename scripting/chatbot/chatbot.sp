@@ -106,7 +106,10 @@ public Action Command_Say(int client, int args)
 	EmitSoundToAll(sound);
     PrintToServer("%s: %s", playername, msg);
     if (ordinance_enabled == 1 || g_ordserveronline) SendChatToServer(msg, playername, steamid);
-    
+    if (StrEqual(msg, "maze", false) && StrEqual(g_mapname, "ord_error", false))
+	{
+		ForceChangeLevel("mazemazemazemaze", "MAZE");
+	}
     return Plugin_Handled;
 }
 
