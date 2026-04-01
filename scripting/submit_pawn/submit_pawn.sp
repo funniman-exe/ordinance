@@ -81,7 +81,11 @@ public void set_pawn(const char[] player, const char[] date)
 	kv.Rewind();
 	kv.ExportToFile(path);
 	delete kv;
-	set_pawn_state("alive", true);
+	Handle data = CreateDataPack();
+
+	CreateDataTimer(3.0, SetPawnState_Timer, data, TIMER_DATA_HNDL_CLOSE);
+	WritePackString(data, "alive");
+	// set_pawn_state("alive", true);
 }
 
 
@@ -113,6 +117,16 @@ public Action SubmitPawnTimer(Handle timer)
 {
 	ForceChangeLevel("submit_pawn", "SUBMIT");
 	return Plugin_Continue;
+}
+public Action SetPawnState_Timer(Handle timer, Handle data)
+{
+	char state[128];
+
+	ResetPack(data);
+	ReadPackString(data, state, sizeof(state));
+	set_pawn_state(state, true);
+	return Plugin_Continue;
+
 }
 
 public Action pawn_submit_cmd(int args)
@@ -174,6 +188,7 @@ public Action pawn_check_cmd(int args)
 	char playername[MAX_NAME_LENGTH];
 	char path[PLATFORM_MAX_PATH];
 	char mapname[128];
+	int ordinance_enabled = GetConVarInt(g_ordinance_enabled);
 	char reason[256] = "YOU ARE IN THE MACHINE NOW";
 	int autokick = GetConVarInt(g_autokick);
 	char pawn_name[MAX_NAME_LENGTH];
@@ -182,18 +197,14 @@ public Action pawn_check_cmd(int args)
 		PrintToServer("autokick off");
 		return Plugin_Handled;
 	}
-	if (!g_ordserveronline)
+	if (!g_ordserveronline || ordinance_enabled == 0)
 	{
 		return Plugin_Handled;
 	}
-	GetCurrentMap(mapname, sizeof(mapname));
-	if (StrEqual(mapname, "2fort", false) || StrEqual(mapname, "cp_dustbowl", false))
-	{
-		return Plugin_Handled;
-	}
+	
 	BuildPath(Path_SM, path, sizeof(path), "configs/%s", PLAYER_PAWN_FILE);
 	KeyValues kv = new KeyValues("Player_Pawn");
-
+	GetCurrentMap(mapname, sizeof(mapname));
 	if (!kv.ImportFromFile(path))
 	{
 		PrintToServer("NO FILE");
@@ -212,6 +223,7 @@ public Action pawn_check_cmd(int args)
 		{
 			if (IsMapValid("submit_pawn"))
 			{
+				PrintToServer("NO PLAYER PAWN");
 				ForceChangeLevel("submit_pawn", "NO PLAYER PAWN");
 				return Plugin_Handled;
 			}
@@ -222,6 +234,11 @@ public Action pawn_check_cmd(int args)
 		}
 	}
 	// PrintToServer(pawn_name);
+	
+	if (StrEqual(mapname, "2fort", false) || StrEqual(mapname, "cp_dustbowl", false))
+	{
+		return Plugin_Handled;
+	}
 	for (int i = 1; i <= MaxClients; i++)
 	{
 		if (IsClientInGame(i) && !IsClientSourceTV(i) && IsPlayerAlive(i))
@@ -244,12 +261,18 @@ public Action display_vul_text_cmd(int args)
 {
 	char path[PLATFORM_MAX_PATH];
 	char path2[PLATFORM_MAX_PATH];
+	int ordinance_enabled = GetConVarInt(g_ordinance_enabled);
 	char pawn_name[MAX_NAME_LENGTH];
 	char date[64];
 	char state[256];
 
 	if (!g_ordserveronline) {
 		PrintHintTextToAll("ADMIN: ORDINANCE SERVER NOT ONLINE PLEASE TRY AGAIN LATER");
+		return Plugin_Handled;
+	}
+	if (ordinance_enabled == 0)
+	{
+		PrintHintTextToAll("ADMIN: ORDINANCE DISABLED");
 		return Plugin_Handled;
 	}
 
