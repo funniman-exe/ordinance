@@ -10,3 +10,8 @@ sourcemod-linux.zip
 build_log.txt
 *.tar.gz
 *.zip
+*.prt
+*.log
+*.vmx
+*.lin
+*.pts

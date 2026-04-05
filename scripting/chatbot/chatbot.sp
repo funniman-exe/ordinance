@@ -142,6 +142,11 @@ public Action Command_Bot_Say(int args)
 		kv.GetString(NULL_STRING, pawn_name, sizeof(pawn_name));
 		delete kv;
 	}
+	else
+	{
+		delete kv;
+		pawn_name = "MACHINE";
+	}
     
     for (int i = 1; i <= args; i++)
 	{

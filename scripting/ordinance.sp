@@ -17,7 +17,7 @@ public Plugin myinfo =
 	name = "ordinance",
 	author = "TheRedEnemy",
 	description = "",
-	version = "3.1.3",
+	version = "3.1.4",
 	url = "https://github.com/theredenemy/ordinance"
 };
 
@@ -107,6 +107,7 @@ public void OnMapStart()
 	char mapname[128];
 	char url[256];
 	char ord_server[256];
+	int ordinance_enabled = GetConVarInt(g_ordinance_enabled);
 	GetConVarString(g_ordinance_server, ord_server, sizeof(ord_server));
 	g_hit_vul_door = false;
 	GetCurrentMap(mapname, sizeof(mapname));
@@ -144,7 +145,7 @@ public void OnMapStart()
 			delete kv3;
 			state = "alive";
 		}
-		if (StrEqual(state, "dead"))
+		if (StrEqual(state, "dead") && ordinance_enabled == 1 && g_ordserveronline)
 		{
 			PrintCenterTextAll("ADMIN: I AM YOU");
 			CreateTimer(20.0, OrdCry);

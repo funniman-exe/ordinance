@@ -136,6 +136,7 @@ public Action pawn_submit_cmd(int args)
 	char cmd[256];
 	char triggername[256];
 	char date[64];
+	int ordinance_enabled = GetConVarInt(g_ordinance_enabled);
 	int timestamp = GetTime();
 	int cmd_len;
 	if (args < 1)
@@ -144,7 +145,7 @@ public Action pawn_submit_cmd(int args)
 		return Plugin_Handled;
 	}
 	GetCmdArgString(full, sizeof(full));
-	if (!g_ordserveronline)
+	if (!g_ordserveronline || ordinance_enabled != 1)
 		{
 			if (IsMapValid("server_error"))
 			{
@@ -197,7 +198,7 @@ public Action pawn_check_cmd(int args)
 		PrintToServer("autokick off");
 		return Plugin_Handled;
 	}
-	if (!g_ordserveronline || ordinance_enabled == 0)
+	if (!g_ordserveronline || ordinance_enabled != 1)
 	{
 		return Plugin_Handled;
 	}
@@ -270,7 +271,7 @@ public Action display_vul_text_cmd(int args)
 		PrintHintTextToAll("ADMIN: ORDINANCE SERVER NOT ONLINE PLEASE TRY AGAIN LATER");
 		return Plugin_Handled;
 	}
-	if (ordinance_enabled == 0)
+	if (ordinance_enabled != 1)
 	{
 		PrintHintTextToAll("ADMIN: ORDINANCE DISABLED");
 		return Plugin_Handled;
