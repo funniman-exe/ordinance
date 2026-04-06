@@ -17,7 +17,7 @@ public Plugin myinfo =
 	name = "ordinance",
 	author = "TheRedEnemy",
 	description = "",
-	version = "3.1.6",
+	version = "3.2.0",
 	url = "https://github.com/theredenemy/ordinance"
 };
 
@@ -126,7 +126,7 @@ public void OnMapStart()
 	char path2[PLATFORM_MAX_PATH];
 	char state[256];
 	BuildPath(Path_SM, path2, sizeof(path2), "configs/%s", PAWN_STATE_FILE);
-	if (StrEqual(mapname, "ordinance"))
+	if (StrEqual(mapname, "ordinance") || StrEqual(mapname, "ord_mode") )
 	{
 		KeyValues kv3 = new KeyValues("Pawn_state");
 		if (!kv3.ImportFromFile(path2))
