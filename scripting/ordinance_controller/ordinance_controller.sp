@@ -10,18 +10,41 @@
 
 public Action OrdError(Handle timer)
 {
-	ForceChangeLevel("ord_error", "PAWN IS DEAD");
+	if (IsMapValid("ord_error"))
+	{
+		ForceChangeLevel("ord_error", "PAWN IS DEAD");
+	}
+	else
+	{
+		ForceChangeLevel("cp_dustbowl", "NO INPUT");
+	}
+	
 	return Plugin_Continue;
 }
 public Action OrdEnd(Handle timer)
 {
-	ForceChangeLevel("ord_end", "NO INPUT");
+	if (IsMapValid("ord_end"))
+	{
+		ForceChangeLevel("ord_end", "NO INPUT");
+	}
+	else
+	{
+		ForceChangeLevel("cp_dustbowl", "NO INPUT");
+	}
 	return Plugin_Continue;
 }
 public Action OrdCry(Handle timer)
 {
 	// Do You take Arbys Gift cards
-	ForceChangeLevel("ord_cry", "FUCKING DIE");
+	if (IsMapValid("ord_cry"))
+	{
+		ForceChangeLevel("ord_cry", "FUCKING DIE");
+	}
+	else
+	{
+		ForceChangeLevel("cp_dustbowl", "NO MAP");
+	}
+	
 	return Plugin_Continue;
 }
 public int OnRenderResponse(Handle req, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode statuscode)
