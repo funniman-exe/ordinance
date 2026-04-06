@@ -136,6 +136,43 @@ public Action ord_clear_command(int args)
 	SendInput("BEGIN");
 	return Plugin_Handled;
 }
+public Action ord_mode_command(int args)
+{
+	char arg[256];
+	int ordinance_enabled = GetConVarInt(g_ordinance_enabled);
+	char url[256];
+	char output[1024];
+	char ord_server[256];
+	GetConVarString(g_ordinance_server, ord_server, sizeof(ord_server));
+	JSON_Object obj = new JSON_Object();
+
+
+	if (args > 1)
+	{
+		return Plugin_Handled;
+	}
+	else if(args < 1)
+	{
+		PrintToServer("[SM] Usage: ord_mode <mode>");
+		return Plugin_Handled;
+	}
+	if (ordinance_enabled != 1 || !g_ordserveronline)
+	{
+		return Plugin_Handled;
+	}
+	GetCmdArg(1, arg, sizeof(arg));
+
+	obj.SetString("mode", arg);
+	obj.Encode(output, sizeof(output));
+	Format(url, sizeof(url), "http://%s/ord/mode", ord_server);
+	Handle req = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, url);
+	if (req == INVALID_HANDLE) return Plugin_Handled;
+	SteamWorks_SetHTTPRequestHeaderValue(req, "Content-Type", "application/json");
+	SteamWorks_SetHTTPRequestRawPostBody(req, "application/json", output, strlen(output));
+	SteamWorks_SetHTTPCallbacks(req, OnHTTPResponse);
+	SteamWorks_SendHTTPRequest(req);
+	return Plugin_Handled;
+}
 public Action ord_input_command(int args)
 {
 	char arg[MAX_INPUT_LEN];
