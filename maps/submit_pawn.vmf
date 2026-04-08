@@ -2,7 +2,7 @@ versioninfo
 {
 	"editorversion" "400"
 	"editorbuild" "8870"
-	"mapversion" "15"
+	"mapversion" "20"
 	"formatversion" "100"
 	"prefab" "0"
 }
@@ -89,7 +89,7 @@ bgimages_plus
 world
 {
 	"id" "1"
-	"mapversion" "15"
+	"mapversion" "20"
 	"classname" "worldspawn"
 	"detailmaterial" "detail/detailsprites"
 	"detailvbsp" "detail.vbsp"
@@ -951,7 +951,6 @@ entity
 		"OnHurtPlayer" "ORD_SUBMITPlaySound0-1"
 		"OnHurtPlayer" "SRCBOXCommandexec pawn_sub2-1"
 		"OnHurtPlayer" "SRCBOXCommandexec pawn_submit20-1"
-		"OnHurtPlayer" "SRCBOXCommandpawn_trigger 'submit'0-1"
 		"OnHurtPlayer" "SRCBOXCommandexec pawn_task.cfg23-1"
 	}
 	solid
@@ -1210,6 +1209,7 @@ entity
 	connections
 	{
 		"OnMapSpawn" "SRCBOXCommandmp_restartround 10-1"
+		"OnMapSpawn" "SRCBOXCommandpawn_clear0-1"
 	}
 	"origin" "-192 -2400 320"
 	editor
@@ -1257,6 +1257,7 @@ entity
 	connections
 	{
 		"OnStartTouch" "MESSAGE_FORYOUDisplay3-1"
+		"OnEndTouch" "MESSAGE_FORYOUDisplay0-1"
 	}
 	solid
 	{
@@ -1389,8 +1390,8 @@ cameras
 	"activecamera" "0"
 	camera
 	{
-		"position" "[-1.4517 214.755 481.245]"
-		"look" "[9.83256 267.843 447.331]"
+		"position" "[-129.869 -2353.68 325.881]"
+		"look" "[-172.918 -2400.83 321.417]"
 	}
 }
 cordons

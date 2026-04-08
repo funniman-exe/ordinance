@@ -17,7 +17,7 @@ public Plugin myinfo =
 	name = "ordinance",
 	author = "TheRedEnemy",
 	description = "",
-	version = "3.2.2",
+	version = "3.3.0",
 	url = "https://github.com/theredenemy/ordinance"
 };
 
@@ -33,6 +33,7 @@ public void OnPluginStart()
 	HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
 	RegServerCmd("pawn_submit", pawn_submit_cmd);
 	RegServerCmd("pawn_check", pawn_check_cmd);
+	RegServerCmd("pawn_clear", pawn_clear_cmd);
 	RegServerCmd("vul_text", display_vul_text_cmd);
 	makePawnConfig();
 	g_ordinance_enabled = CreateConVar("ordinance_enabled", "0");

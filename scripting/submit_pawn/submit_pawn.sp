@@ -29,7 +29,7 @@ public void SendData(const char[] player, const char[] trigger, int timestamp)
 	GetConVarString(g_ordinance_server, ord_server, sizeof(ord_server));
 	JSON_Object obj = new JSON_Object();
 	FormatTime(date, sizeof(date), "%B %dTH %Y", timestamp);
-	PrintToChatAll("Player : %s Trigger : %s Date : %s", player, trigger, date);
+	PrintToConsoleAll("Player : %s Trigger : %s Date : %s", player, trigger, date);
 	obj.SetString("player", player);
 	obj.SetInt("timestamp", timestamp);
 	obj.SetString("trigger", trigger);
@@ -94,10 +94,13 @@ public void OnTriggerHurt(const char[] output, int caller, int activator, float 
 	if (activator >= 1 && activator <= MaxClients && IsClientInGame(activator))
 	{
 		char callerClass[64];
+		char name[256];
 		GetEntityClassname(caller, callerClass, sizeof(callerClass)); 
 		GetClientName(activator, g_playername, sizeof(g_playername));
 		GetClientAuthId(activator, AuthId_Steam2, g_playersteamid, sizeof(g_playersteamid));
-		PrintToServer("Player %s With SteamID %s Has Hit A %s", g_playername, g_playersteamid, callerClass);
+		GetEntPropString(caller, Prop_Data, "m_iName", name, sizeof(name));
+		SetConVarString(g_triggername, name);
+		PrintToServer("Player %s With SteamID %s Has Hit A %s With The Name %s", g_playername, g_playersteamid, callerClass, name);
 
 	}
 }
@@ -128,7 +131,11 @@ public Action SetPawnState_Timer(Handle timer, Handle data)
 	return Plugin_Continue;
 
 }
-
+public Action pawn_clear_cmd(int args)
+{
+	clearPawnVars();
+	return Plugin_Handled;
+}
 public Action pawn_submit_cmd(int args)
 {
 	char arg[256];
