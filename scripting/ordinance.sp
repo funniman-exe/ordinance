@@ -17,7 +17,7 @@ public Plugin myinfo =
 	name = "ordinance",
 	author = "TheRedEnemy",
 	description = "",
-	version = "3.3.0",
+	version = "4.0.0",
 	url = "https://github.com/theredenemy/ordinance"
 };
 
@@ -47,6 +47,7 @@ public void OnPluginStart()
 	RegServerCmd("ord_mode", ord_mode_command);
 	RegConsoleCmd("say", Command_Say);
 	RegConsoleCmd("say_team", Command_Say);
+	SetConVarFlags(g_ordinance_enabled, FCVAR_NOTIFY);
 	PrintToServer("ordinance Has Loaded");
 }
 public int CheckOrdServer(Handle hRequest, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode statuscode)
@@ -90,6 +91,9 @@ void makePawnConfig()
 		kv.SetString("playername", "SERVICE MANAGER");
 		// Change This From 2099 Due to Y2K38
 		kv.SetString("date", "DECEMBER 31TH 2008");
+		kv.SetString("team", "UNKNOWN");
+		kv.SetString("weapon", "UNKNOWN");
+		kv.SetString("playerclass", "UNKNOWN");
 		kv.Rewind();
 		kv.ExportToFile(path);
 		delete kv;

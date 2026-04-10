@@ -119,6 +119,7 @@ public Action Command_Bot_Say(int args)
 	char pawn_name[MAX_NAME_LENGTH];
     char msg[256];
     char arg[256];
+	char team[64];
     char sound[] = "friends/message.wav";
     int msg_len;
     if (args < 1)
@@ -147,6 +148,17 @@ public Action Command_Bot_Say(int args)
 		delete kv;
 		pawn_name = "MACHINE";
 	}
+	
+	if (kv.JumpToKey("team", false))
+	{
+		kv.GetString(NULL_STRING, team, sizeof(team));
+		delete kv;
+	}
+	else
+	{
+		delete kv;
+		pawn_name = "UNKNOWN";
+	}
     
     for (int i = 1; i <= args; i++)
 	{
@@ -159,8 +171,20 @@ public Action Command_Bot_Say(int args)
 		}
         StrCat(msg, sizeof(msg), arg);
     }
+    if (StrEqual(team, "RED", false))
+	{
+		PrintToChatAll("\x07FF4040%s\x01 : %s", pawn_name, msg)
+	}
+	else if(StrEqual(team, "BLUE", false))
+	{
+		PrintToChatAll("\x07FF4040%s\x01 : %s", pawn_name, msg)
+	}
+	else
+	{
+		PrintToChatAll("\x0799CCFF%s\x01 : %s", pawn_name, msg);
+	}
+	
     
-    PrintToChatAll("\x0700FF00%s\x01 : %s", pawn_name, msg);
     PrecacheSound(sound, true);
 		
 	EmitSoundToAll(sound);

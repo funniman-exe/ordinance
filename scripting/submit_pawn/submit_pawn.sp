@@ -3,10 +3,14 @@
 #include <sourcemod>
 #include <SteamWorks>
 #include <json>
+#include <tf2_stocks>
 #pragma newdecls required
 #pragma semicolon 1
 char g_playername[MAX_NAME_LENGTH];
 char g_playersteamid[256];
+char g_playerclass[128];
+char g_playerweapon[256];
+char g_playerteam[64];
 
 bool g_hit_vul_door;
 
@@ -20,7 +24,7 @@ void clearPawnVars()
 	PrintToServer("Vars Cleared");
 }
 
-public void SendData(const char[] player, const char[] trigger, int timestamp)
+public void SendData(const char[] player, const char[] trigger, int timestamp, const char[] team, const char[] weapon, const char[] playerclass)
 {
 	char date[256];
 	char output[1024];
@@ -29,10 +33,14 @@ public void SendData(const char[] player, const char[] trigger, int timestamp)
 	GetConVarString(g_ordinance_server, ord_server, sizeof(ord_server));
 	JSON_Object obj = new JSON_Object();
 	FormatTime(date, sizeof(date), "%B %dTH %Y", timestamp);
-	PrintToConsoleAll("Player : %s Trigger : %s Date : %s", player, trigger, date);
+	PrintToConsoleAll("Player : %s Trigger : %s Date : %s Team : %s Weapon : %s PlayerClass : %s", player, trigger, date, team, weapon, playerclass);
 	obj.SetString("player", player);
 	obj.SetInt("timestamp", timestamp);
+	obj.SetString("date", date);
 	obj.SetString("trigger", trigger);
+	obj.SetString("team", team);
+	obj.SetString("weapon", weapon);
+	obj.SetString("playerclass", playerclass);
 	obj.Encode(output, sizeof(output));
 	Format(url, sizeof(url), "http://%s/ord/pawn/submit", ord_server);
 	Handle req = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, url);
@@ -71,13 +79,16 @@ public void set_pawn_state(const char[] state, bool senddata)
 	}
 
 }
-public void set_pawn(const char[] player, const char[] date)
+public void set_pawn(const char[] player, const char[] date, const char[] team, const char[] weapon, const char[] playerclass)
 {
 	char path[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, path, sizeof(path), "configs/%s", PLAYER_PAWN_FILE);
 	KeyValues kv = new KeyValues("Player_Pawn");
 	kv.SetString("playername", player);
 	kv.SetString("date", date);
+	kv.SetString("team", team);
+	kv.SetString("weapon", weapon);
+	kv.SetString("playerclass", playerclass);
 	kv.Rewind();
 	kv.ExportToFile(path);
 	delete kv;
@@ -95,12 +106,79 @@ public void OnTriggerHurt(const char[] output, int caller, int activator, float 
 	{
 		char callerClass[64];
 		char name[256];
+		char weapon[256];
+		TFClassType tf_class = TF2_GetPlayerClass(activator);
+		TFTeam tf_team = TF2_GetClientTeam(activator);
 		GetEntityClassname(caller, callerClass, sizeof(callerClass)); 
 		GetClientName(activator, g_playername, sizeof(g_playername));
 		GetClientAuthId(activator, AuthId_Steam2, g_playersteamid, sizeof(g_playersteamid));
+		GetClientWeapon(activator, weapon, sizeof(weapon));
 		GetEntPropString(caller, Prop_Data, "m_iName", name, sizeof(name));
 		SetConVarString(g_triggername, name);
-		PrintToServer("Player %s With SteamID %s Has Hit A %s With The Name %s", g_playername, g_playersteamid, callerClass, name);
+		ReplaceString(g_playername, sizeof(g_playername), "/", "");
+		ReplaceString(g_playername, sizeof(g_playername), "\\", "");
+		ReplaceString(g_playername, sizeof(g_playername), "\"", "");
+		ReplaceString(g_playername, sizeof(g_playername), "\'", "");
+		// i Know This Code Looks Bad But This is the way that i know how to do 
+		if (tf_class == TFClass_Scout)
+		{
+			g_playerclass = "SCOUT";
+		}
+		else if(tf_class == TFClass_Engineer)
+		{
+			g_playerclass = "ENGINEER";
+		}
+		else if(tf_class == TFClass_Heavy)
+		{
+			g_playerclass = "HEAVY";
+		}
+		else if(tf_class == TFClass_DemoMan)
+		{
+			g_playerclass = "DEMOMAN";
+		}
+		else if(tf_class == TFClass_Medic)
+		{
+			g_playerclass = "MEDIC";
+		}
+		else if(tf_class == TFClass_Pyro)
+		{
+			g_playerclass = "PYRO";
+		}
+		else if(tf_class == TFClass_Sniper)
+		{
+			g_playerclass = "SNIPER";
+		}
+		else if(tf_class == TFClass_Soldier)
+		{
+			g_playerclass = "SOLDIER";
+		}
+		else if(tf_class == TFClass_Spy)
+		{
+			g_playerclass = "SPY";
+		}
+		else if(tf_class == TFClass_Unknown)
+		{
+			g_playerclass = "UNKNOWN";
+		}
+		else
+		{
+			g_playerclass = "INVAILD";
+		}
+
+		if (tf_team == TFTeam_Red)
+		{
+			g_playerteam = "RED";
+		}
+		else if(tf_team == TFTeam_Blue)
+		{
+			g_playerteam = "BLUE";
+		}
+		else
+		{
+			g_playerteam = "UNKNOWN";
+		}
+
+		PrintToServer("Player %s With SteamID %s On Team %s With The Class %s And Has a %s Has Hit A %s With The Name %s", g_playername, g_playersteamid, g_playerteam, g_playerclass, g_playerweapon, callerClass, name);
 
 	}
 }
@@ -185,8 +263,8 @@ public Action pawn_submit_cmd(int args)
 	ServerCommand("%s", cmd);
 	g_triggername.GetString(triggername, sizeof(triggername));
 	FormatTime(date, sizeof(date), "%B %dTH %Y", timestamp);
-	set_pawn(g_playername, date);
-	SendData(g_playername, triggername, timestamp);
+	set_pawn(g_playername, date, g_playerteam, g_playerweapon, g_playerclass);
+	SendData(g_playername, triggername, timestamp, g_playerteam, g_playerweapon, g_playerclass);
 	PrintHintTextToAll("ADMIN: CALCULATING");
 
 	return Plugin_Handled;
