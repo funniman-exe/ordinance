@@ -348,6 +348,9 @@ public Action display_vul_text_cmd(int args)
 	char path2[PLATFORM_MAX_PATH];
 	int ordinance_enabled = GetConVarInt(g_ordinance_enabled);
 	char pawn_name[MAX_NAME_LENGTH];
+	char team[64];
+	char playerclass[128];
+	char weapon[256];
 	char date[64];
 	char state[256];
 
@@ -375,47 +378,85 @@ public Action display_vul_text_cmd(int args)
 	if (kv.JumpToKey("playername", false))
 	{
 		kv.GetString(NULL_STRING, pawn_name, sizeof(pawn_name));
-		delete kv;
+		kv.Rewind();
 	}
 	else
 	{
-		delete kv;
+		kv.Rewind();
 		pawn_name = "MACHINE";
 	}
-	KeyValues kv2 = new KeyValues("Player_Pawn");
-	if (!kv2.ImportFromFile(path))
-	{
-		PrintToServer("NO FILE");
-		delete kv2;
-		return Plugin_Handled;
-	}
+	
+	
 
-	if (kv2.JumpToKey("date", false))
+
+
+	if (kv.JumpToKey("date", false))
 	{
-		kv2.GetString(NULL_STRING, date, sizeof(date));
-		delete kv2;
+		kv.GetString(NULL_STRING, date, sizeof(date));
+		kv.Rewind();
 	}
 	else
 	{
-		delete kv2;
+		kv.Rewind();
 		date = "DECEMBER 31TH 2008";
 	}
-	KeyValues kv3 = new KeyValues("Pawn_state");
-	if (!kv3.ImportFromFile(path2))
+	if (kv.JumpToKey("team", false))
 	{
-		PrintToServer("NO FILE");
-		delete kv3;
-		return Plugin_Handled;
-	}
-
-	if (kv3.JumpToKey("state", false))
-	{
-		kv3.GetString(NULL_STRING, state, sizeof(state));
-		delete kv3;
+		kv.GetString(NULL_STRING, team, sizeof(team));
+		kv.Rewind();
 	}
 	else
 	{
-		delete kv3;
+		kv.Rewind();
+		team = "UNKNOWN";
+	}
+	
+	if (kv.JumpToKey("weapon", false))
+	{
+		kv.GetString(NULL_STRING, weapon, sizeof(weapon));
+		kv.Rewind();
+	}
+	else
+	{
+		kv.Rewind();
+		weapon = "UNKNOWN";
+	}
+	if (kv.JumpToKey("weapon", false))
+	{
+		kv.GetString(NULL_STRING, weapon, sizeof(weapon));
+		kv.Rewind();
+	}
+	else
+	{
+		kv.Rewind();
+		weapon = "UNKNOWN";
+	}
+	if (kv.JumpToKey("playerclass", false))
+	{
+		kv.GetString(NULL_STRING, playerclass, sizeof(playerclass));
+		delete kv;
+	}
+	else
+	{
+		delete kv;
+		weapon = "UNKNOWN";
+	}
+	KeyValues kv_pawn = new KeyValues("Pawn_state");
+	if (!kv_pawn.ImportFromFile(path2))
+	{
+		PrintToServer("NO FILE");
+		delete kv_pawn;
+		return Plugin_Handled;
+	}
+
+	if (kv_pawn.JumpToKey("state", false))
+	{
+		kv_pawn.GetString(NULL_STRING, state, sizeof(state));
+		delete kv_pawn;
+	}
+	else
+	{
+		delete kv_pawn;
 		state = "alive";
 	}
 	if (StrEqual(state, "dead"))
@@ -437,7 +478,7 @@ public Action display_vul_text_cmd(int args)
 	{
 		date[i] = CharToUpper(date[i]);
 	}
-	PrintCenterTextAll("ADMIN: I AM %s. I DIED ON %s AND THEN RESPAWN IN THE MACHINE", pawn_name, date);
+	PrintCenterTextAll("ADMIN: I AM %s. A %s %s WITH A %s. I DIED ON %s AND THEN RESPAWN IN THE MACHINE", pawn_name, team, playerclass, weapon, date);
 	return Plugin_Handled;
 
 
