@@ -11,7 +11,6 @@ char g_playersteamid[256];
 char g_playerclass[128];
 char g_playerweapon[256];
 char g_playerteam[64];
-
 bool g_hit_vul_door;
 
 ConVar g_triggername;
@@ -107,6 +106,19 @@ public void OnTriggerHurt(const char[] output, int caller, int activator, float 
 		char callerClass[64];
 		char name[256];
 		char weapon[256];
+		const char classnames[10][128] =
+		{
+			"UNKNOWN",
+			"SCOUT",
+			"SNIPER",
+			"SOLDIER",
+			"DEMOMAN",
+			"MEDIC",
+			"HEAVY",
+			"PYRO",
+			"SPY",
+			"ENGINEER"
+		};
 		TFClassType tf_class = TF2_GetPlayerClass(activator);
 		TFTeam tf_team = TF2_GetClientTeam(activator);
 		GetEntityClassname(caller, callerClass, sizeof(callerClass)); 
@@ -119,51 +131,7 @@ public void OnTriggerHurt(const char[] output, int caller, int activator, float 
 		ReplaceString(g_playername, sizeof(g_playername), "\\", "");
 		ReplaceString(g_playername, sizeof(g_playername), "\"", "");
 		ReplaceString(g_playername, sizeof(g_playername), "\'", "");
-		// i Know This Code Looks Bad But This is the way that i know how to do 
-		if (tf_class == TFClass_Scout)
-		{
-			g_playerclass = "SCOUT";
-		}
-		else if(tf_class == TFClass_Engineer)
-		{
-			g_playerclass = "ENGINEER";
-		}
-		else if(tf_class == TFClass_Heavy)
-		{
-			g_playerclass = "HEAVY";
-		}
-		else if(tf_class == TFClass_DemoMan)
-		{
-			g_playerclass = "DEMOMAN";
-		}
-		else if(tf_class == TFClass_Medic)
-		{
-			g_playerclass = "MEDIC";
-		}
-		else if(tf_class == TFClass_Pyro)
-		{
-			g_playerclass = "PYRO";
-		}
-		else if(tf_class == TFClass_Sniper)
-		{
-			g_playerclass = "SNIPER";
-		}
-		else if(tf_class == TFClass_Soldier)
-		{
-			g_playerclass = "SOLDIER";
-		}
-		else if(tf_class == TFClass_Spy)
-		{
-			g_playerclass = "SPY";
-		}
-		else if(tf_class == TFClass_Unknown)
-		{
-			g_playerclass = "UNKNOWN";
-		}
-		else
-		{
-			g_playerclass = "INVAILD";
-		}
+		g_playerclass = classnames[tf_class];
 
 		if (tf_team == TFTeam_Red)
 		{
