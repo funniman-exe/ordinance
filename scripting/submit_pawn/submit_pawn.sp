@@ -106,7 +106,7 @@ public void OnTriggerHurt(const char[] output, int caller, int activator, float 
 		char callerClass[64];
 		char name[256];
 		char weapon[256];
-		const char classnames[10][128] =
+		const char* classnames[]
 		{
 			"UNKNOWN",
 			"SCOUT",
