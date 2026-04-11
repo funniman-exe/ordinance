@@ -12,18 +12,21 @@ ConVar g_ordinance_enabled;
 ConVar g_ordinance_server;
 bool g_ordserveronline;
 char g_mapname[128];
+char g_last_weapon[MAXPLAYERS+1][128];
 public Plugin myinfo =
 {
 	name = "ordinance",
 	author = "TheRedEnemy",
 	description = "",
-	version = "4.0.0",
+	version = "4.0.1",
 	url = "https://github.com/theredenemy/ordinance"
 };
 
 #include <submit_pawn/submit_pawn.sp>
 #include <ordinance_controller/ordinance_controller.sp>
 #include <chatbot/chatbot.sp>
+
+
 public void OnPluginStart()
 {
 	g_triggername = CreateConVar("pawn_trigger", "\0");
@@ -49,6 +52,18 @@ public void OnPluginStart()
 	RegConsoleCmd("say_team", Command_Say);
 	SetConVarFlags(g_ordinance_enabled, FCVAR_NOTIFY);
 	PrintToServer("ordinance Has Loaded");
+}
+public void OnClientPutInServer(int client)
+{
+	SDKHook(client, SDKHook_WeaponSwitchPost, WeaponSwitchPostCheck);
+}
+public Action WeaponSwitchPostCheck(int client, int weapon)
+{
+	if (IsValidEntity(weapon))
+	{
+		GetEdictClassname(weapon, g_last_weapon[client], sizeof(g_last_weapon));
+	}
+	return Plugin_Continue;
 }
 public int CheckOrdServer(Handle hRequest, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode statuscode)
 {

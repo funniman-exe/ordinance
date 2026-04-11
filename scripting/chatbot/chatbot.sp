@@ -141,14 +141,13 @@ public Action Command_Bot_Say(int args)
 	if (kv.JumpToKey("playername", false))
 	{
 		kv.GetString(NULL_STRING, pawn_name, sizeof(pawn_name));
-		delete kv;
+		kv.Rewind()
 	}
 	else
 	{
-		delete kv;
+		kv.Rewind()
 		pawn_name = "MACHINE";
 	}
-	
 	if (kv.JumpToKey("team", false))
 	{
 		kv.GetString(NULL_STRING, team, sizeof(team));
@@ -157,7 +156,7 @@ public Action Command_Bot_Say(int args)
 	else
 	{
 		delete kv;
-		pawn_name = "UNKNOWN";
+		team = "UNKNOWN";
 	}
     
     for (int i = 1; i <= args; i++)
