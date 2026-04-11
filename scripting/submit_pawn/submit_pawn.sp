@@ -32,7 +32,7 @@ public void SendData(const char[] player, const char[] trigger, int timestamp, c
 	GetConVarString(g_ordinance_server, ord_server, sizeof(ord_server));
 	JSON_Object obj = new JSON_Object();
 	FormatTime(date, sizeof(date), "%B %dTH %Y", timestamp);
-	PrintToConsoleAll("Player : %s Trigger : %s Date : %s Team : %s Weapon : %s PlayerClass : %s", player, trigger, date, team, weapon, playerclass);
+	PrintToConsoleAll("Player : %s Trigger : %s Date : %s Team : %s Weapon : %s Player Class : %s", player, trigger, date, team, weapon, playerclass);
 	obj.SetString("player", player);
 	obj.SetInt("timestamp", timestamp);
 	obj.SetString("date", date);
@@ -105,13 +105,12 @@ public void OnTriggerHurt(const char[] output, int caller, int activator, float 
 	{
 		char callerClass[64];
 		char name[256];
-		char weapon[256];
 		TFClassType tf_class = TF2_GetPlayerClass(activator);
 		TFTeam tf_team = TF2_GetClientTeam(activator);
 		GetEntityClassname(caller, callerClass, sizeof(callerClass)); 
 		GetClientName(activator, g_playername, sizeof(g_playername));
 		GetClientAuthId(activator, AuthId_Steam2, g_playersteamid, sizeof(g_playersteamid));
-		GetClientWeapon(activator, weapon, sizeof(weapon));
+		g_playerweapon = g_last_weapon[activator];
 		GetEntPropString(caller, Prop_Data, "m_iName", name, sizeof(name));
 		SetConVarString(g_triggername, name);
 		ReplaceString(g_playername, sizeof(g_playername), "/", "");
@@ -431,7 +430,7 @@ public Action display_vul_text_cmd(int args)
 		kv.Rewind();
 		weapon = "UNKNOWN";
 	}
-	if (kv.JumpToKey("playerclass", false))
+	if (kv.JumpToKey("PlayerClass", false))
 	{
 		kv.GetString(NULL_STRING, playerclass, sizeof(playerclass));
 		delete kv;
