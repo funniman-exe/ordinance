@@ -477,6 +477,10 @@ public Action display_vul_text_cmd(int args)
 	{
 		date[i] = CharToUpper(date[i]);
 	}
+	for (int i = 0; i < strlen(weapon); i++)
+	{
+		weapon[i] = CharToUpper(weapon[i]);
+	}
 	PrintCenterTextAll("ADMIN: I AM %s. A %s %s WITH A %s. I DIED ON %s AND THEN RESPAWN IN THE MACHINE", pawn_name, team, playerclass, weapon, date);
 	return Plugin_Handled;
 
