@@ -135,7 +135,7 @@ public void OnTriggerHurt(const char[] output, int caller, int activator, float 
 			"RED",
 			"BLU"
 		};
-		g_playername = teams[tf_team];
+		g_playerteam = teams[tf_team];
 
 		PrintToServer("Player %s With SteamID %s On Team %s With The Class %s And Has a %s Has Hit A %s With The Name %s", g_playername, g_playersteamid, g_playerteam, g_playerclass, g_playerweapon, callerClass, name);
 
