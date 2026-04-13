@@ -13,12 +13,13 @@ ConVar g_ordinance_server;
 bool g_ordserveronline;
 char g_mapname[128];
 char g_last_weapon[MAXPLAYERS+1][128];
+KeyValues g_KvItems;
 public Plugin myinfo =
 {
 	name = "ordinance",
 	author = "TheRedEnemy",
 	description = "",
-	version = "4.0.2",
+	version = "4.0.3",
 	url = "https://github.com/theredenemy/ordinance"
 };
 
@@ -32,6 +33,7 @@ public void OnPluginStart()
 	g_triggername = CreateConVar("pawn_trigger", "\0");
 	g_autokick = CreateConVar("pawn_autokick", "0");
 	g_ordserveronline = false;
+	g_KvItems = new KeyValues("items_game");
 	HookEvent("teamplay_round_start", Event_RoundStart, EventHookMode_Post);
 	HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
 	RegServerCmd("pawn_submit", pawn_submit_cmd);
@@ -51,6 +53,10 @@ public void OnPluginStart()
 	RegConsoleCmd("say", Command_Say);
 	RegConsoleCmd("say_team", Command_Say);
 	SetConVarFlags(g_ordinance_enabled, FCVAR_NOTIFY);
+	if (!g_KvItems.ImportFromFile("scripts/items/items_game.txt"))
+		{
+			SetFailState("ITEMS_GAME.TXT FAILED TO LOAD");
+		}
 	PrintToServer("ordinance Has Loaded");
 }
 public void OnClientPutInServer(int client)
@@ -59,11 +65,44 @@ public void OnClientPutInServer(int client)
 }
 public Action WeaponSwitchPostCheck(int client, int weapon)
 {
+	char index_STRING[64];
 	if (IsValidEntity(weapon))
 	{
-		GetEdictClassname(weapon, g_last_weapon[client], sizeof(g_last_weapon));
+		int index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+		IntToString(index, index_STRING, sizeof(index_STRING));
+		
+		
+
+		if (g_KvItems.JumpToKey("items"))
+		{
+			if (g_KvItems.JumpToKey(index_STRING))
+			{
+				g_KvItems.GetString("name", g_last_weapon[client], sizeof(g_last_weapon));
+				g_KvItems.Rewind();
+				return Plugin_Continue;
+			}
+			else
+			{
+				GetEdictClassname(weapon, g_last_weapon[client], sizeof(g_last_weapon));
+				g_KvItems.Rewind();
+				return Plugin_Continue;
+			}
+		}
+		else
+		{
+			GetEdictClassname(weapon, g_last_weapon[client], sizeof(g_last_weapon));
+			g_KvItems.Rewind();
+			return Plugin_Continue;
+		}
+		
+
+		
 	}
-	return Plugin_Continue;
+	else
+	{
+		return Plugin_Continue;
+	}
+	
 }
 public int CheckOrdServer(Handle hRequest, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode statuscode)
 {
