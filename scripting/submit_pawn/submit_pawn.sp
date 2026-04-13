@@ -98,7 +98,6 @@ public void set_pawn(const char[] player, const char[] date, const char[] team, 
 	// set_pawn_state("alive", true);
 }
 
-
 public void OnTriggerHurt(const char[] output, int caller, int activator, float delay)
 {
 	if (activator >= 1 && activator <= MaxClients && IsClientInGame(activator))
@@ -117,64 +116,26 @@ public void OnTriggerHurt(const char[] output, int caller, int activator, float 
 		ReplaceString(g_playername, sizeof(g_playername), "\\", "");
 		ReplaceString(g_playername, sizeof(g_playername), "\"", "");
 		ReplaceString(g_playername, sizeof(g_playername), "\'", "");
-		// i Know This Code Looks Bad But This is the way that i know how to do 
-		if (tf_class == TFClass_Scout)
-		{
-			g_playerclass = "SCOUT";
-		}
-		else if(tf_class == TFClass_Engineer)
-		{
-			g_playerclass = "ENGINEER";
-		}
-		else if(tf_class == TFClass_Heavy)
-		{
-			g_playerclass = "HEAVY";
-		}
-		else if(tf_class == TFClass_DemoMan)
-		{
-			g_playerclass = "DEMOMAN";
-		}
-		else if(tf_class == TFClass_Medic)
-		{
-			g_playerclass = "MEDIC";
-		}
-		else if(tf_class == TFClass_Pyro)
-		{
-			g_playerclass = "PYRO";
-		}
-		else if(tf_class == TFClass_Sniper)
-		{
-			g_playerclass = "SNIPER";
-		}
-		else if(tf_class == TFClass_Soldier)
-		{
-			g_playerclass = "SOLDIER";
-		}
-		else if(tf_class == TFClass_Spy)
-		{
-			g_playerclass = "SPY";
-		}
-		else if(tf_class == TFClass_Unknown)
-		{
-			g_playerclass = "UNKNOWN";
-		}
-		else
-		{
-			g_playerclass = "INVAILD";
-		}
-
-		if (tf_team == TFTeam_Red)
-		{
-			g_playerteam = "RED";
-		}
-		else if(tf_team == TFTeam_Blue)
-		{
-			g_playerteam = "BLUE";
-		}
-		else
-		{
-			g_playerteam = "UNKNOWN";
-		}
+		char classnames[10][9] = {
+			"UNKNOWN",
+			"SCOUT",
+			"SNIPER",
+			"SOLDIER",
+			"DEMOMAN",
+			"MEDIC",
+			"HEAVY",
+			"PYRO",
+			"SPY",
+			"ENGINEER"
+		};
+		g_playerclass = classnames[tf_class];
+		char teams[4][11] = {
+			"UNASSIGNED",
+			"SPECTATOR",
+			"RED",
+			"BLU"
+		};
+		g_playername = teams[tf_team];
 
 		PrintToServer("Player %s With SteamID %s On Team %s With The Class %s And Has a %s Has Hit A %s With The Name %s", g_playername, g_playersteamid, g_playerteam, g_playerclass, g_playerweapon, callerClass, name);
 
