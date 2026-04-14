@@ -19,7 +19,7 @@ public Plugin myinfo =
 	name = "ordinance",
 	author = "TheRedEnemy",
 	description = "",
-	version = "4.1.1",
+	version = "4.1.2",
 	url = "https://github.com/theredenemy/ordinance"
 };
 
@@ -53,6 +53,7 @@ public void OnPluginStart()
 	RegConsoleCmd("say", Command_Say);
 	RegConsoleCmd("say_team", Command_Say);
 	SetConVarFlags(g_ordinance_enabled, FCVAR_NOTIFY);
+	LogMessage("LOADING ITEMS_GAME.TXT...");
 	if (!g_KvItems.ImportFromFile("scripts/items/items_game.txt"))
 		{
 			SetFailState("ITEMS_GAME.TXT FAILED TO LOAD");
@@ -100,6 +101,7 @@ public Action WeaponSwitchPostCheck(int client, int weapon)
 	}
 	else
 	{
+		g_last_weapon[client] = "INVALID_ENTITY";
 		return Plugin_Continue;
 	}
 	
