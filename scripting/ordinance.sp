@@ -19,7 +19,7 @@ public Plugin myinfo =
 	name = "ordinance",
 	author = "TheRedEnemy",
 	description = "",
-	version = "4.2.0",
+	version = "4.2.1",
 	url = "https://github.com/theredenemy/ordinance"
 };
 
@@ -123,7 +123,7 @@ public int CheckOrdServer(Handle hRequest, bool bFailure, bool bRequestSuccessfu
 {
 	if (bRequestSuccessful && statuscode == k_EHTTPStatusCode200OK)
 	{
-		bool forbid = (StrEqual(g_mapname, "2fort", false) || StrEqual(g_mapname, "cp_dustbowl", false) || StrEqual(g_mapname, "ord_error", false));
+		bool forbid = (StrEqual(g_mapname, "2fort", false) || StrEqual(g_mapname, "cp_dustbowl", false) || StrEqual(g_mapname, "ord_error", false) || StrEqual(g_mapname, "askask", false) || StrEqual(g_mapname, "ord_ren", false) || StrEqual(g_mapname, "ord_end", false) || StrEqual(g_mapname, "ordinance", false) || StrEqual(g_mapname, "view", false) || StrEqual(g_mapname, "ord_mode", false));
 		char state[256];
 		char data[1024];
 		char kv_state[256];
@@ -132,7 +132,7 @@ public int CheckOrdServer(Handle hRequest, bool bFailure, bool bRequestSuccessfu
 		
 		g_ordserveronline = true;
 		
-		if (StrEqual(g_mapname, "ordinance"))
+		if (StrEqual(g_mapname, "ordinance", false))
 		{
 			SendInput("BEGIN");
 		}
@@ -167,17 +167,23 @@ public int CheckOrdServer(Handle hRequest, bool bFailure, bool bRequestSuccessfu
 			PrintToServer("Close Handle");
 			return 0;
 		}
-		if (!forbid && !StrEqual(kv_state, "dead", false))
+		SteamWorks_GetHTTPResponseBodyData(hRequest, data, HTTP_BodySize);
+		JSON_Object obj = json_decode(data);
+		obj.GetString("state", state, sizeof(state));
+		
+		
+			
+		if (StrEqual(state, "dead"))
 		{
-			SteamWorks_GetHTTPResponseBodyData(hRequest, data, HTTP_BodySize);
-			JSON_Object obj = json_decode(data);
-			obj.GetString("state", state, sizeof(state));
-			if (StrEqual(state, "dead"))
+			SetConVarInt(g_ordinance_enabled, 0, true);
+			if (!forbid && !StrEqual(kv_state, "dead", false))
 			{
 				PrintToServer("PAWN IS DEAD");
 				CreateTimer(20.0, OrdError);
 			}
+				
 		}
+		
 		CloseHandle(hRequest);
 		PrintToServer("Close Handle");
 		return 0;
