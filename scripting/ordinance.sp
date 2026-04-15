@@ -19,7 +19,7 @@ public Plugin myinfo =
 	name = "ordinance",
 	author = "TheRedEnemy",
 	description = "",
-	version = "4.2.1",
+	version = "4.2.2",
 	url = "https://github.com/theredenemy/ordinance"
 };
 
@@ -175,7 +175,7 @@ public int CheckOrdServer(Handle hRequest, bool bFailure, bool bRequestSuccessfu
 			
 		if (StrEqual(state, "dead"))
 		{
-			SetConVarInt(g_ordinance_enabled, 0, true);
+			g_ordserveronline = false;
 			if (!forbid && !StrEqual(kv_state, "dead", false))
 			{
 				PrintToServer("PAWN IS DEAD");
