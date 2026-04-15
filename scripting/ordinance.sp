@@ -20,7 +20,7 @@ public Plugin myinfo =
 	name = "ordinance",
 	author = "TheRedEnemy",
 	description = "",
-	version = "4.2.3",
+	version = "4.2.4",
 	url = "https://github.com/theredenemy/ordinance"
 };
 
@@ -34,6 +34,7 @@ public void OnPluginStart()
 	g_triggername = CreateConVar("pawn_trigger", "\0");
 	g_autokick = CreateConVar("pawn_autokick", "0");
 	g_ordserveronline = false;
+	g_pawnalive = true;
 	g_KvItems = new KeyValues("items_game");
 	HookEvent("teamplay_round_start", Event_RoundStart, EventHookMode_Post);
 	HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
