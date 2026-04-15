@@ -11,6 +11,7 @@ ConVar g_ordinance_enabled;
 #define PAWN_STATE_FILE "pawn_state.txt"
 ConVar g_ordinance_server;
 bool g_ordserveronline;
+bool g_pawnalive;
 char g_mapname[128];
 char g_last_weapon[MAXPLAYERS+1][128];
 KeyValues g_KvItems;
@@ -19,7 +20,7 @@ public Plugin myinfo =
 	name = "ordinance",
 	author = "TheRedEnemy",
 	description = "",
-	version = "4.2.2",
+	version = "4.2.3",
 	url = "https://github.com/theredenemy/ordinance"
 };
 
@@ -175,13 +176,17 @@ public int CheckOrdServer(Handle hRequest, bool bFailure, bool bRequestSuccessfu
 			
 		if (StrEqual(state, "dead"))
 		{
-			g_ordserveronline = false;
+			g_pawnalive = false;
 			if (!forbid && !StrEqual(kv_state, "dead", false))
 			{
 				PrintToServer("PAWN IS DEAD");
 				CreateTimer(20.0, OrdError);
 			}
 				
+		}
+		else
+		{
+			g_pawnalive = true;
 		}
 		
 		CloseHandle(hRequest);

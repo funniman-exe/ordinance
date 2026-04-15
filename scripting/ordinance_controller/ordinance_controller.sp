@@ -200,7 +200,7 @@ public Action ord_input_command(int args)
 		PrintToServer("[SM] Usage: ord_input <input>");
 		return Plugin_Handled;
 	}
-	if (ordinance_enabled != 1 || !g_ordserveronline)
+	if (ordinance_enabled != 1 || !g_ordserveronline || !g_pawnalive)
 	{
 		if (IsMapValid("ord_end"))
 		{
