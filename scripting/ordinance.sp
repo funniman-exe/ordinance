@@ -19,7 +19,7 @@ public Plugin myinfo =
 	name = "ordinance",
 	author = "TheRedEnemy",
 	description = "",
-	version = "4.1.3",
+	version = "4.2.0",
 	url = "https://github.com/theredenemy/ordinance"
 };
 
@@ -156,7 +156,7 @@ public int CheckOrdServer(Handle hRequest, bool bFailure, bool bRequestSuccessfu
 		else
 		{
 			delete kv3;
-			state = "alive";
+			kv_state = "alive";
 		}
 		int HTTP_BodySize = 0;
 
