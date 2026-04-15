@@ -8,19 +8,7 @@
 #define MAX_INPUT_LEN 256
 
 
-public Action OrdError(Handle timer)
-{
-	if (IsMapValid("ord_error"))
-	{
-		ForceChangeLevel("ord_error", "PAWN IS DEAD");
-	}
-	else
-	{
-		ForceChangeLevel("cp_dustbowl", "NO INPUT");
-	}
-	
-	return Plugin_Continue;
-}
+
 public Action OrdEnd(Handle timer)
 {
 	if (IsMapValid("ord_end"))

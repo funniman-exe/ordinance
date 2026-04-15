@@ -19,7 +19,7 @@ public Plugin myinfo =
 	name = "ordinance",
 	author = "TheRedEnemy",
 	description = "",
-	version = "4.1.2",
+	version = "4.1.3",
 	url = "https://github.com/theredenemy/ordinance"
 };
 
@@ -106,17 +106,80 @@ public Action WeaponSwitchPostCheck(int client, int weapon)
 	}
 	
 }
+public Action OrdError(Handle timer)
+{
+	if (IsMapValid("ord_error"))
+	{
+		ForceChangeLevel("ord_error", "PAWN IS DEAD");
+	}
+	else
+	{
+		ForceChangeLevel("cp_dustbowl", "NO INPUT");
+	}
+	
+	return Plugin_Continue;
+}
 public int CheckOrdServer(Handle hRequest, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode statuscode)
 {
 	if (bRequestSuccessful && statuscode == k_EHTTPStatusCode200OK)
 	{
-		CloseHandle(hRequest);
-		PrintToServer("Close Handle");
+		bool forbid = (StrEqual(g_mapname, "2fort", false) || StrEqual(g_mapname, "cp_dustbowl", false) || StrEqual(g_mapname, "ord_error", false));
+		char state[256];
+		char data[1024];
+		char kv_state[256];
+		char path2[PLATFORM_MAX_PATH];
+		
+		
 		g_ordserveronline = true;
+		
 		if (StrEqual(g_mapname, "ordinance"))
 		{
 			SendInput("BEGIN");
 		}
+		BuildPath(Path_SM, path2, sizeof(path2), "configs/%s", PAWN_STATE_FILE);
+	
+		KeyValues kv3 = new KeyValues("Pawn_state");
+		if (!kv3.ImportFromFile(path2))
+		{
+			PrintToServer("NO FILE");
+			delete kv3;
+			CloseHandle(hRequest);
+			PrintToServer("Close Handle");
+			return 0;
+		}
+
+		if (kv3.JumpToKey("state", false))
+		{
+			kv3.GetString(NULL_STRING, kv_state, sizeof(kv_state));
+			delete kv3;
+		}
+		else
+		{
+			delete kv3;
+			state = "alive";
+		}
+		int HTTP_BodySize = 0;
+
+		if (!SteamWorks_GetHTTPResponseBodySize(hRequest, HTTP_BodySize) || HTTP_BodySize <= 0)
+		{
+			PrintToServer("Response Is Empty or failed to read size");
+			CloneHandle(hRequest);
+			PrintToServer("Close Handle");
+			return 0;
+		}
+		if (!forbid && !StrEqual(kv_state, "dead", false))
+		{
+			SteamWorks_GetHTTPResponseBodyData(hRequest, data, HTTP_BodySize);
+			JSON_Object obj = json_decode(data);
+			obj.GetString("state", state, sizeof(state));
+			if (StrEqual(state, "dead"))
+			{
+				PrintToServer("PAWN IS DEAD");
+				CreateTimer(20.0, OrdError);
+			}
+		}
+		CloseHandle(hRequest);
+		PrintToServer("Close Handle");
 		return 0;
 	}
 	else
@@ -178,7 +241,7 @@ public void OnMapStart()
 		set_pawn_state("dead", false);
 	}
 	HookEntityOutput("trigger_hurt", "OnHurtPlayer", OnTriggerHurt);
-	Format(url, sizeof(url), "http://%s", ord_server);
+	Format(url, sizeof(url), "http://%s/ord/info", ord_server);
 	Handle hRequest = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, url);
 	SteamWorks_SetHTTPCallbacks(hRequest, CheckOrdServer);
 	SteamWorks_SendHTTPRequest(hRequest);
