@@ -45,7 +45,9 @@ public void SendChatToServer(const char[] msg, const char[] playername, const ch
     char output[1024];
 	char url[256];
     char ord_server[256];
+	
 	GetConVarString(g_ordinance_server, ord_server, sizeof(ord_server));
+	
     for (int i = 0; i < strlen(msg); i++)
 	{
 		msg[i] = CharToLower(msg[i]);
@@ -59,6 +61,9 @@ public void SendChatToServer(const char[] msg, const char[] playername, const ch
 	Handle req = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, url);
 	if (req == INVALID_HANDLE) return;
     SteamWorks_SetHTTPRequestHeaderValue(req, "Content-Type", "application/json");
+	char ord_key[1024];
+	GetConVarString(g_ord_key, ord_key, sizeof(ord_key));
+	SteamWorks_SetHTTPRequestHeaderValue(req, "X-ORD-KEY", ord_key);
     SteamWorks_SetHTTPRequestRawPostBody(req, "application/json", output, strlen(output));
     SteamWorks_SetHTTPCallbacks(req, OnChatResponse);
     SteamWorks_SendHTTPRequest(req);

@@ -46,6 +46,9 @@ public void SendData(const char[] player, const char[] trigger, int timestamp, c
 	if (req == INVALID_HANDLE) return;
 	SteamWorks_SetHTTPRequestHeaderValue(req, "Content-Type", "application/json");
 	SteamWorks_SetHTTPRequestRawPostBody(req, "application/json", output, strlen(output));
+	char ord_key[1024];
+	GetConVarString(g_ord_key, ord_key, sizeof(ord_key));
+	SteamWorks_SetHTTPRequestHeaderValue(req, "X-ORD-KEY", ord_key);
 	SteamWorks_SetHTTPCallbacks(req, OnHTTPResponse);
 	SteamWorks_SendHTTPRequest(req);
 }
@@ -73,6 +76,9 @@ public void set_pawn_state(const char[] state, bool senddata)
 		if (req == INVALID_HANDLE) return;
 		SteamWorks_SetHTTPRequestHeaderValue(req, "Content-Type", "application/json");
 		SteamWorks_SetHTTPRequestRawPostBody(req, "application/json", output, strlen(output));
+		char ord_key[1024];
+		GetConVarString(g_ord_key, ord_key, sizeof(ord_key));
+		SteamWorks_SetHTTPRequestHeaderValue(req, "X-ORD-KEY", ord_key);
 		SteamWorks_SetHTTPCallbacks(req, OnHTTPResponse);
 		SteamWorks_SendHTTPRequest(req);
 	}

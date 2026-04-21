@@ -138,6 +138,9 @@ public void SendInput(const char[] input)
 	Handle req = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, url);
 	if (req == INVALID_HANDLE) return;
 	SteamWorks_SetHTTPRequestHeaderValue(req, "Content-Type", "application/json");
+	char ord_key[1024];
+	GetConVarString(g_ord_key, ord_key, sizeof(ord_key));
+	SteamWorks_SetHTTPRequestHeaderValue(req, "X-ORD-KEY", ord_key);
 	SteamWorks_SetHTTPRequestRawPostBody(req, "application/json", output, strlen(output));
 	SteamWorks_SetHTTPCallbacks(req, OnHTTPResponse);
 	SteamWorks_SendHTTPRequest(req);
@@ -179,6 +182,9 @@ public Action ord_mode_command(int args)
 	Handle req = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, url);
 	if (req == INVALID_HANDLE) return Plugin_Handled;
 	SteamWorks_SetHTTPRequestHeaderValue(req, "Content-Type", "application/json");
+	char ord_key[1024];
+	GetConVarString(g_ord_key, ord_key, sizeof(ord_key));
+	SteamWorks_SetHTTPRequestHeaderValue(req, "X-ORD-KEY", ord_key);
 	SteamWorks_SetHTTPRequestRawPostBody(req, "application/json", output, strlen(output));
 	SteamWorks_SetHTTPCallbacks(req, OnHTTPResponse);
 	SteamWorks_SendHTTPRequest(req);
@@ -249,6 +255,9 @@ public Action ord_render_command(int args)
 			Format(url, sizeof(url), "http://%s/ord/input/render", ord_server);
 			Handle req = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, url);
 			SteamWorks_SetHTTPRequestHeaderValue(req, "Content-Type", "application/json");
+			char ord_key[1024];
+			GetConVarString(g_ord_key, ord_key, sizeof(ord_key));
+			SteamWorks_SetHTTPRequestHeaderValue(req, "X-ORD-KEY", ord_key);
 			SteamWorks_SetHTTPCallbacks(req, OnRenderResponse);
 			SteamWorks_SendHTTPRequest(req);
 		}
@@ -273,6 +282,9 @@ public Action ord_get_inputs(int args)
 		Format(url, sizeof(url), "http://%s/ord/input", ord_server);
 		Handle req = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, url);
 		SteamWorks_SetHTTPRequestHeaderValue(req, "Content-Type", "application/json");
+		char ord_key[1024];
+		GetConVarString(g_ord_key, ord_key, sizeof(ord_key));
+		SteamWorks_SetHTTPRequestHeaderValue(req, "X-ORD-KEY", ord_key);
 		SteamWorks_SetHTTPCallbacks(req, OnGetInputsResponse);
 		SteamWorks_SendHTTPRequest(req);
 	}

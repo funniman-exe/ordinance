@@ -10,6 +10,7 @@ ConVar g_ordinance_enabled;
 #define PLAYER_PAWN_FILE "player_pawn.txt"
 #define PAWN_STATE_FILE "pawn_state.txt"
 ConVar g_ordinance_server;
+ConVar g_ord_key;
 bool g_ordserveronline;
 bool g_pawnalive;
 char g_mapname[128];
@@ -20,7 +21,7 @@ public Plugin myinfo =
 	name = "ordinance",
 	author = "TheRedEnemy",
 	description = "",
-	version = "4.2.5",
+	version = "5.0.0",
 	url = "https://github.com/theredenemy/ordinance"
 };
 
@@ -33,6 +34,7 @@ public void OnPluginStart()
 {
 	g_triggername = CreateConVar("pawn_trigger", "\0");
 	g_autokick = CreateConVar("pawn_autokick", "0");
+	g_ord_key = CreateConVar("ord_key", "\0");
 	g_ordserveronline = false;
 	g_pawnalive = true;
 	g_KvItems = new KeyValues("items_game");
