@@ -41,7 +41,7 @@ public void SendData(const char[] player, const char[] trigger, int timestamp, c
 	obj.SetString("weapon", weapon);
 	obj.SetString("playerclass", playerclass);
 	obj.Encode(output, sizeof(output));
-	Format(url, sizeof(url), "http://%s/ord/pawn/submit", ord_server);
+	Format(url, sizeof(url), "%s/ord/pawn/submit", ord_server);
 	Handle req = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, url);
 	if (req == INVALID_HANDLE) return;
 	SteamWorks_SetHTTPRequestHeaderValue(req, "Content-Type", "application/json");
@@ -71,7 +71,7 @@ public void set_pawn_state(const char[] state, bool senddata)
 		JSON_Object obj = new JSON_Object();
 		obj.SetString("state", state);
 		obj.Encode(output, sizeof(output));
-		Format(url, sizeof(url), "http://%s/ord/pawn/state", ord_server);
+		Format(url, sizeof(url), "%s/ord/pawn/state", ord_server);
 		Handle req = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, url);
 		if (req == INVALID_HANDLE) return;
 		SteamWorks_SetHTTPRequestHeaderValue(req, "Content-Type", "application/json");

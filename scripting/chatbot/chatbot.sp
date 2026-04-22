@@ -57,7 +57,7 @@ public void SendChatToServer(const char[] msg, const char[] playername, const ch
     obj.SetString("player", playername);
     obj.SetString("steamid", steamid);
 	obj.Encode(output, sizeof(output));
-	Format(url, sizeof(url), "http://%s/ord/chat/send", ord_server);
+	Format(url, sizeof(url), "%s/ord/chat/send", ord_server);
 	Handle req = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, url);
 	if (req == INVALID_HANDLE) return;
     SteamWorks_SetHTTPRequestHeaderValue(req, "Content-Type", "application/json");

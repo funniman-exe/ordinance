@@ -134,7 +134,7 @@ public void SendInput(const char[] input)
 	obj.SetString("input", input);
 	obj.SetString("pawn_name", pawn_name);
 	obj.Encode(output, sizeof(output));
-	Format(url, sizeof(url), "http://%s/ord/input", ord_server);
+	Format(url, sizeof(url), "%s/ord/input", ord_server);
 	Handle req = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, url);
 	if (req == INVALID_HANDLE) return;
 	SteamWorks_SetHTTPRequestHeaderValue(req, "Content-Type", "application/json");
@@ -178,7 +178,7 @@ public Action ord_mode_command(int args)
 
 	obj.SetString("mode", arg);
 	obj.Encode(output, sizeof(output));
-	Format(url, sizeof(url), "http://%s/ord/mode", ord_server);
+	Format(url, sizeof(url), "%s/ord/mode", ord_server);
 	Handle req = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, url);
 	if (req == INVALID_HANDLE) return Plugin_Handled;
 	SteamWorks_SetHTTPRequestHeaderValue(req, "Content-Type", "application/json");
@@ -252,7 +252,7 @@ public Action ord_render_command(int args)
 	{
 		if (ordinance_enabled == 1) 
 		{
-			Format(url, sizeof(url), "http://%s/ord/input/render", ord_server);
+			Format(url, sizeof(url), "%s/ord/input/render", ord_server);
 			Handle req = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, url);
 			SteamWorks_SetHTTPRequestHeaderValue(req, "Content-Type", "application/json");
 			char ord_key[1024];
@@ -279,7 +279,7 @@ public Action ord_get_inputs(int args)
 	GetConVarString(g_ordinance_server, ord_server, sizeof(ord_server));
 	if (ordinance_enabled == 1) 
 	{
-		Format(url, sizeof(url), "http://%s/ord/input", ord_server);
+		Format(url, sizeof(url), "%s/ord/input", ord_server);
 		Handle req = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, url);
 		SteamWorks_SetHTTPRequestHeaderValue(req, "Content-Type", "application/json");
 		char ord_key[1024];
